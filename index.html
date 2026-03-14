@@ -1,0 +1,656 @@
+<!DOCTYPE html>
+
+<html lang="ru">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1.0, maximum-scale=1.0">
+<title>Какой ритуал со свечой решит вашу проблему?</title>
+<link href="https://fonts.googleapis.com/css2?family=Cormorant+Garamond:ital,wght@0,300;0,400;0,600;1,300;1,400&family=Cinzel:wght@400;500;600&family=Raleway:wght@300;400;500;600&display=swap" rel="stylesheet">
+<style>
+  :root {
+    --gold: #c9a84c;
+    --gold-light: #e8c97a;
+    --dark: #080604;
+    --text: #e8e0d0;
+    --muted: #8a7e6e;
+    --flame: #e8620a;
+    --flame-light: #f5a623;
+  }
+  * { margin:0; padding:0; box-sizing:border-box; }
+  html, body { overflow-x:hidden; max-width:100%; }
+  body { background:var(--dark); color:var(--text); font-family:'Raleway',sans-serif; min-height:100vh; overflow-x:hidden; }
+
+.stars { position:fixed; inset:0; pointer-events:none; z-index:0; }
+.star { position:absolute; border-radius:50%; background:white; animation:twinkle var(–d,3s) ease-in-out infinite alternate; }
+@keyframes twinkle { from{opacity:0.1} to{opacity:0.7} }
+.ambient { position:fixed; width:600px; height:600px; border-radius:50%; filter:blur(130px); pointer-events:none; z-index:0; opacity:0.1; top:-100px; left:50%; transform:translateX(-50%); background:radial-gradient(circle,#d4500a,#5a1500); animation:pulse 6s ease-in-out infinite alternate; }
+@keyframes pulse { from{opacity:0.08;transform:translateX(-50%) scale(1)} to{opacity:0.16;transform:translateX(-50%) scale(1.2)} }
+
+.container { position:relative; z-index:1; max-width:640px; margin:0 auto; padding:40px 20px 80px; min-height:100vh; display:flex; flex-direction:column; align-items:center; overflow-x:hidden; width:100%; }
+
+.eyebrow { font-family:‘Cinzel’,serif; font-size:11px; letter-spacing:4px; color:var(–flame-light); text-transform:uppercase; margin-bottom:20px; opacity:0; animation:fadeUp 0.8s 0.2s forwards; font-weight:600; }
+.title { font-family:‘Cormorant Garamond’,serif; font-size:clamp(34px,8vw,56px); font-weight:600; line-height:1.15; text-align:center; margin-bottom:16px; opacity:0; animation:fadeUp 0.8s 0.4s forwards; }
+.title em { font-style:italic; color:var(–flame-light); }
+.subtitle { font-size:16px; font-weight:500; color:#b8a898; text-align:center; line-height:1.7; max-width:420px; margin-bottom:36px; opacity:0; animation:fadeUp 0.8s 0.6s forwards; }
+.divider { display:flex; align-items:center; gap:12px; width:100%; max-width:340px; margin-bottom:32px; opacity:0; animation:fadeUp 0.8s 0.7s forwards; }
+.divider-line { flex:1; height:1px; background:linear-gradient(to right,transparent,var(–flame-light),transparent); }
+
+/* QUIZ */
+.quiz-card { width:100%; background:rgba(255,255,255,0.04); border:1px solid rgba(229,98,10,0.3); border-radius:2px; padding:28px 16px; box-sizing:border-box; position:relative; opacity:0; animation:fadeUp 0.8s 0.8s forwards; }
+.quiz-card::before { content:’’; position:absolute; top:0; left:0; right:0; height:1px; background:linear-gradient(to right,transparent,var(–flame-light),transparent); }
+.quiz-label { font-family:‘Cinzel’,serif; font-size:12px; letter-spacing:3px; color:var(–flame-light); text-transform:uppercase; margin-bottom:22px; text-align:center; font-weight:600; }
+
+/* Problem selector */
+.problem-title { font-family:‘Cormorant Garamond’,serif; font-size:22px; font-weight:600; text-align:center; color:var(–text); margin-bottom:20px; line-height:1.4; }
+.problems { display:grid; grid-template-columns:1fr 1fr; gap:8px; margin-bottom:24px; width:100%; }
+.problem-btn { background:rgba(255,255,255,0.04); border:1px solid rgba(229,98,10,0.25); border-radius:3px; padding:14px 8px; text-align:center; cursor:pointer; transition:all 0.3s; font-family:‘Raleway’,sans-serif; font-size:13px; font-weight:600; color:#c8b898; line-height:1.4; }
+.problem-btn:hover { border-color:var(–flame-light); color:var(–text); background:rgba(229,98,10,0.08); }
+.problem-btn.selected { border-color:var(–flame-light); color:#ffffff; background:rgba(229,98,10,0.15); box-shadow:0 0 15px rgba(229,98,10,0.2); }
+.problem-btn .pb-icon { font-size:26px; display:block; margin-bottom:8px; }
+
+.step2-label { font-family:‘Cormorant Garamond’,serif; font-size:20px; font-weight:600; text-align:center; color:var(–text); margin-bottom:16px; opacity:0; transition:opacity 0.5s; }
+.step2-label.visible { opacity:1; }
+
+.input-row { display:flex; gap:10px; margin-bottom:22px; justify-content:center; align-items:flex-end; opacity:0; transition:opacity 0.5s; }
+.input-row.visible { opacity:1; }
+.input-group { display:flex; flex-direction:column; align-items:center; gap:7px; }
+.input-group label { font-size:10px; letter-spacing:2px; color:var(–muted); text-transform:uppercase; }
+.num-input { background:rgba(255,255,255,0.05); border:1px solid rgba(229,98,10,0.3); border-radius:2px; color:var(–flame-light); font-family:‘Cormorant Garamond’,serif; font-size:26px; font-weight:300; text-align:center; outline:none; -moz-appearance:textfield; transition:border-color 0.3s; }
+.num-input::-webkit-outer-spin-button,.num-input::-webkit-inner-spin-button { -webkit-appearance:none; }
+.num-input:focus { border-color:var(–flame-light); background:rgba(229,98,10,0.08); }
+.num-input.d { width:68px; height:60px; }
+.num-input.m { width:68px; height:60px; }
+.num-input.y { width:100px; height:60px; }
+.sep { font-family:‘Cormorant Garamond’,serif; font-size:26px; color:var(–flame); opacity:0.6; padding-bottom:8px; }
+
+.main-btn { width:100%; padding:15px; background:linear-gradient(135deg,#e8620a,#a03800); border:none; border-radius:2px; color:#fff; font-family:‘Cinzel’,serif; font-size:11px; letter-spacing:3px; text-transform:uppercase; cursor:pointer; transition:all 0.3s; opacity:0; transition:opacity 0.5s, transform 0.3s, box-shadow 0.3s; }
+.main-btn.visible { opacity:1; }
+.main-btn:hover { transform:translateY(-1px); box-shadow:0 8px 30px rgba(229,98,10,0.4); }
+.errmsg { color:#e07070; font-size:12px; text-align:center; margin-bottom:14px; display:none; }
+
+/* Result */
+.result-wrap { width:100%; margin-top:28px; display:none; }
+.ritual-vis { text-align:center; margin-bottom:24px; }
+.ritual-symbol { font-size:72px; display:block; animation:flicker 2s ease-in-out infinite alternate; }
+@keyframes flicker { 0%{transform:translateY(0) scale(1)} 50%{transform:translateY(-5px) scale(1.06)} 100%{transform:translateY(-2px) scale(0.98)} }
+.ritual-name { font-family:‘Cinzel’,serif; font-size:18px; letter-spacing:2px; margin-top:12px; }
+.ritual-sub { font-family:‘Cormorant Garamond’,serif; font-style:italic; font-size:13px; color:var(–muted); margin-top:4px; }
+
+.rcard { background:rgba(255,255,255,0.03); border:1px solid rgba(255,255,255,0.07); border-radius:2px; padding:24px; position:relative; overflow:hidden; }
+.rcard::before { content:’’; position:absolute; top:0; left:0; right:0; height:2px; background:linear-gradient(to right,transparent,var(–flame-light),transparent); }
+.blabel { font-family:‘Cinzel’,serif; font-size:11px; letter-spacing:3px; color:#b8a070; text-transform:uppercase; margin-bottom:8px; font-weight:600; }
+.btitle { font-family:‘Cormorant Garamond’,serif; font-size:20px; color:var(–flame-light); margin-bottom:10px; line-height:1.3; }
+.btext { font-size:15px; font-weight:500; line-height:1.8; color:#d8cfc0; margin-bottom:18px; }
+.steps-list { display:flex; flex-direction:column; gap:10px; margin-bottom:20px; }
+.step-item { display:flex; align-items:flex-start; gap:12px; font-size:15px; font-weight:500; color:#d0c8b8; line-height:1.5; }
+.step-num { font-family:‘Cinzel’,serif; font-size:10px; color:var(–flame-light); background:rgba(229,98,10,0.15); border:1px solid rgba(229,98,10,0.3); border-radius:50%; width:22px; height:22px; display:flex; align-items:center; justify-content:center; flex-shrink:0; margin-top:1px; }
+.sep2 { height:1px; background:linear-gradient(to right,transparent,rgba(229,98,10,0.2),transparent); margin:18px 0; }
+.warning-box { background:rgba(229,98,10,0.07); border:1px solid rgba(229,98,10,0.2); border-radius:3px; padding:14px 16px; margin-bottom:20px; font-size:14px; font-weight:500; color:#d8c8a8; line-height:1.6; font-style:italic; text-align:center; }
+.cta { text-align:center; }
+.ctatext { font-family:‘Cormorant Garamond’,serif; font-size:20px; font-style:italic; font-weight:600; line-height:1.5; color:var(–text); margin-bottom:18px; }
+.ctabtn { display:inline-block; padding:14px 32px; background:transparent; border:1px solid var(–flame-light); border-radius:2px; color:var(–flame-light); font-family:‘Cinzel’,serif; font-size:10px; letter-spacing:3px; text-transform:uppercase; cursor:pointer; text-decoration:none; transition:all 0.3s; animation:glow 2.5s ease-in-out infinite; }
+@keyframes glow { 0%,100%{box-shadow:0 0 10px rgba(229,98,10,0.2)} 50%{box-shadow:0 0 25px rgba(229,98,10,0.6)} }
+.ctabtn:hover { background:rgba(229,98,10,0.1); }
+
+.footer { margin-top:40px; text-align:center; font-size:11px; color:rgba(138,126,110,0.35); letter-spacing:2px; font-family:‘Cinzel’,serif; }
+
+/* Modal */
+.overlay { position:fixed; inset:0; z-index:9999; background:rgba(4,2,1,0.93); backdrop-filter:blur(10px); display:flex; align-items:center; justify-content:center; padding:20px; opacity:0; pointer-events:none; transition:opacity 0.4s; }
+.overlay.open { opacity:1; pointer-events:all; }
+.modal { width:100%; max-width:420px; background:#0f0700; border:1px solid rgba(229,98,10,0.3); border-radius:4px; padding:36px 28px 32px; position:relative; transform:translateY(30px) scale(0.97); transition:transform 0.45s cubic-bezier(0.16,1,0.3,1); max-height:90vh; overflow-y:auto; }
+.overlay.open .modal { transform:translateY(0) scale(1); }
+.modal::before { content:’’; position:absolute; top:0; left:0; right:0; height:2px; background:linear-gradient(to right,transparent,var(–flame-light),transparent); }
+.mclose { position:absolute; top:12px; right:14px; background:none; border:none; color:var(–muted); font-size:18px; cursor:pointer; transition:color 0.2s; }
+.mclose:hover { color:var(–flame-light); }
+.meyebrow { font-family:‘Cinzel’,serif; font-size:9px; letter-spacing:3px; color:var(–flame-light); text-transform:uppercase; margin-bottom:12px; text-align:center; }
+.mtitle { font-family:‘Cormorant Garamond’,serif; font-size:24px; font-weight:300; text-align:center; line-height:1.3; margin-bottom:7px; color:var(–text); }
+.mtitle em { font-style:italic; color:var(–flame-light); }
+.msub { font-size:13px; font-weight:300; color:var(–muted); text-align:center; line-height:1.6; margin-bottom:24px; }
+.mfield { margin-bottom:13px; }
+.mfield label { display:block; font-size:10px; letter-spacing:2px; color:var(–muted); text-transform:uppercase; margin-bottom:6px; }
+.minput-wrap { position:relative; }
+.minput-wrap .icon { position:absolute; left:13px; top:50%; transform:translateY(-50%); font-size:14px; pointer-events:none; }
+.minput-wrap .minput { padding-left:40px; }
+.minput { width:100%; background:rgba(255,255,255,0.06); border:1px solid rgba(229,98,10,0.25); border-radius:2px; padding:12px 14px; color:#ffffff; font-family:‘Raleway’,sans-serif; font-size:14px; font-weight:400; outline:none; transition:border-color 0.3s; -webkit-text-fill-color:#ffffff; caret-color:var(–flame-light); }
+.minput::placeholder { color:rgba(200,180,150,0.5); -webkit-text-fill-color:rgba(200,180,150,0.5); }
+.minput:focus { border-color:var(–flame-light); background:rgba(50,20,5,0.95); -webkit-text-fill-color:#ffffff; }
+.minput:-webkit-autofill,.minput:-webkit-autofill:hover,.minput:-webkit-autofill:focus { -webkit-text-fill-color:#ffffff !important; -webkit-box-shadow:0 0 0px 1000px #1a0800 inset !important; }
+.mbtn { width:100%; margin-top:18px; padding:14px; background:linear-gradient(135deg,#e8620a,#a03800); border:none; border-radius:2px; color:#fff; font-family:‘Cinzel’,serif; font-size:11px; letter-spacing:3px; text-transform:uppercase; cursor:pointer; transition:all 0.3s; }
+.mbtn:hover { transform:translateY(-1px); box-shadow:0 8px 30px rgba(229,98,10,0.4); }
+.mprivacy { font-size:10px; color:rgba(138,126,110,0.4); text-align:center; margin-top:12px; line-height:1.5; }
+.paybox { background:rgba(255,255,255,0.03); border:1px solid rgba(255,255,255,0.08); border-radius:3px; padding:13px 14px; margin-bottom:10px; display:flex; align-items:center; gap:10px; }
+.payinfo { flex:1; text-align:left; }
+.paylabel { font-size:10px; letter-spacing:2px; color:var(–muted); text-transform:uppercase; margin-bottom:3px; }
+.payval { font-family:‘Cormorant Garamond’,serif; font-size:19px; color:var(–text); letter-spacing:1px; }
+.copybtn { background:rgba(229,98,10,0.1); border:1px solid rgba(229,98,10,0.3); border-radius:2px; color:var(–flame-light); font-size:9px; letter-spacing:1px; padding:6px 9px; cursor:pointer; font-family:‘Cinzel’,serif; white-space:nowrap; transition:all 0.2s; }
+.copybtn.copied { background:rgba(50,200,100,0.15); border-color:rgba(50,200,100,0.4); color:#5ec97a; }
+.tgbtn { display:inline-flex; align-items:center; gap:10px; padding:12px 24px; border:1px solid var(–flame-light); border-radius:2px; color:var(–flame-light); font-family:‘Cinzel’,serif; font-size:10px; letter-spacing:2px; text-transform:uppercase; text-decoration:none; transition:all 0.3s; animation:glow 2.5s ease-in-out infinite; }
+.tgbtn:hover { background:rgba(229,98,10,0.1); }
+
+@keyframes fadeUp { from{opacity:0;transform:translateY(16px)} to{opacity:1;transform:translateY(0)} }
+</style>
+
+</head>
+<body>
+<div class="stars" id="stars"></div>
+<div class="ambient"></div>
+
+<div class="container">
+  <div class="eyebrow">Свечная Магия Инны Сави · Бесплатно</div>
+  <h1 class="title">Какой ритуал со свечой <em>решит вашу проблему?</em></h1>
+  <p class="subtitle">Выберите свою ситуацию и введите дату рождения — получите персональный ритуал бесплатно</p>
+
+  <div class="divider">
+    <div class="divider-line"></div>
+    <span style="color:var(--flame-light);font-size:18px;">🕯</span>
+    <div class="divider-line"></div>
+  </div>
+
+  <div class="quiz-card">
+    <div class="quiz-label">Шаг 1 · Ваша ситуация</div>
+    <div class="problem-title">Что вас беспокоит прямо сейчас?</div>
+
+```
+<div class="problems">
+  <div class="problem-btn" onclick="selectProblem(this,'money')" data-problem="money">
+    <span class="pb-icon">💰</span>Нет денег·Финансовый блок
+  </div>
+  <div class="problem-btn" onclick="selectProblem(this,'love')" data-problem="love">
+    <span class="pb-icon">💔</span>Нет любви·Одиночество
+  </div>
+  <div class="problem-btn" onclick="selectProblem(this,'negative')" data-problem="negative">
+    <span class="pb-icon">🌑</span>Негатив·Сглаз·Порча
+  </div>
+  <div class="problem-btn" onclick="selectProblem(this,'wish')" data-problem="wish">
+    <span class="pb-icon">✨</span>Исполнить желание
+  </div>
+  <div class="problem-btn" onclick="selectProblem(this,'health')" data-problem="health">
+    <span class="pb-icon">🌿</span>Здоровье·Восстановление
+  </div>
+  <div class="problem-btn" onclick="selectProblem(this,'family')" data-problem="family">
+    <span class="pb-icon">🏠</span>Семья·Отношения·Мир в доме
+  </div>
+  <div class="problem-btn" onclick="selectProblem(this,'trade')" data-problem="trade" style="grid-column:1/-1;">
+    <span class="pb-icon">🏡</span>Покупка · Продажа · Бизнес
+  </div>
+</div>
+
+<div class="step2-label" id="step2-label">🕯 Теперь введите дату рождения</div>
+
+<div class="input-row" id="input-row">
+  <div class="input-group"><label>День</label><input class="num-input d" id="sv-day" type="number" min="1" max="31" placeholder="ДД"></div>
+  <span class="sep">·</span>
+  <div class="input-group"><label>Месяц</label><input class="num-input m" id="sv-month" type="number" min="1" max="12" placeholder="ММ"></div>
+  <span class="sep">·</span>
+  <div class="input-group"><label>Год</label><input class="num-input y" id="sv-year" type="number" min="1920" max="2015" placeholder="ГГГГ"></div>
+</div>
+
+<div class="errmsg" id="sv-err">Выберите ситуацию и введите дату рождения</div>
+<button class="main-btn" id="main-btn" onclick="svCalculate()">🕯 Узнать свой ритуал</button>
+```
+
+  </div>
+
+  <!-- Result -->
+
+  <div class="result-wrap" id="sv-result">
+    <div class="ritual-vis">
+      <span class="ritual-symbol" id="sv-symbol">🕯</span>
+      <div class="ritual-name" id="sv-name" style="color:var(--flame-light);"></div>
+      <div class="ritual-sub" id="sv-sub"></div>
+    </div>
+
+```
+<div class="rcard">
+  <div class="blabel">Ваш персональный ритуал</div>
+  <div class="btitle" id="sv-title"></div>
+  <div class="btext" id="sv-text"></div>
+
+  <div class="blabel">Как проводить ритуал — 4 шага:</div>
+  <div class="steps-list" id="sv-steps"></div>
+
+  <div class="warning-box" id="sv-warning"></div>
+
+  <div class="sep2"></div>
+  <div class="cta">
+    <div class="ctatext" id="sv-ctatext"></div>
+    <a class="ctabtn" href="#" onclick="svOpenModal();return false;">🕯 Получить персональный обряд</a>
+  </div>
+</div>
+```
+
+  </div>
+
+  <div class="footer">🕯 &nbsp; Инна Сави · Мастер Свечной Магии &nbsp; 🕯</div>
+</div>
+
+<!-- MODAL -->
+
+<div class="overlay" id="sv-overlay">
+  <div class="modal">
+    <button class="mclose" onclick="svCloseModal()">✕</button>
+
+```
+<div id="sv-step1">
+  <div class="meyebrow">Шаг 1 из 2 · Ваши данные</div>
+  <h2 class="mtitle">Куда отправить <em>обряд?</em></h2>
+  <p class="msub">Укажите имя и Telegram — пришлю полный ритуал после оплаты</p>
+  <div class="mfield">
+    <label>Ваше имя</label>
+    <div class="minput-wrap"><span class="icon">🕯</span><input class="minput" id="sv-fname" type="text" placeholder="Как вас зовут?"></div>
+  </div>
+  <div class="mfield">
+    <label>Telegram или WhatsApp</label>
+    <div class="minput-wrap"><span class="icon">📲</span><input class="minput" id="sv-fcontact" type="text" placeholder="@username или +7 777 000 00 00"></div>
+  </div>
+  <div id="sv-ferr" style="color:#e07070;font-size:12px;text-align:center;margin-top:8px;display:none;">Заполните имя и контакт</div>
+  <button class="mbtn" onclick="svGoPayment()">Далее → к оплате</button>
+  <p class="mprivacy">🔒 Ваши данные не передаются третьим лицам</p>
+</div>
+
+<div id="sv-step2" style="display:none;">
+  <div class="meyebrow">Шаг 2 из 2 · Оплата</div>
+  <h2 class="mtitle" style="margin-bottom:6px;">Оплатите обряд</h2>
+  <p class="msub">После оплаты нажмите кнопку ниже — свяжусь в течение 15 минут</p>
+  <div style="background:rgba(229,98,10,0.08);border:1px solid rgba(229,98,10,0.3);border-radius:4px;padding:14px 20px;margin-bottom:16px;text-align:center;">
+    <div style="font-family:'Cinzel',serif;font-size:9px;letter-spacing:3px;color:var(--muted);margin-bottom:4px;">СТОИМОСТЬ МАГИЧЕСКОЙ РАБОТЫ</div>
+    <div style="font-family:'Cormorant Garamond',serif;font-size:46px;font-weight:300;color:var(--flame-light);line-height:1;" id="modal-price">15 000 ₸</div>
+    <div style="font-size:11px;color:var(--muted);margin-top:4px;">Индивидуальная магическая работа · Онлайн</div>
+  </div>
+  <div class="paybox">
+    <span style="font-size:24px;">📱</span>
+    <div class="payinfo"><div class="paylabel">Kaspi по номеру</div><div class="payval">8 707 370 88 65</div></div>
+    <button class="copybtn" onclick="svCopy('87073708865',this)">КОПИРОВАТЬ</button>
+  </div>
+  <div class="paybox" style="margin-bottom:20px;">
+    <span style="font-size:24px;">💳</span>
+    <div class="payinfo"><div class="paylabel">Карта · INNA S.</div><div class="payval">4400 4303 3932 2718</div></div>
+    <button class="copybtn" onclick="svCopy('4400430339322718',this)">КОПИРОВАТЬ</button>
+  </div>
+  <button class="mbtn" onclick="svConfirm()" style="margin-top:0;">✅ Я оплатила — жду обряд</button>
+  <p class="mprivacy" style="margin-top:12px;">Нажмите только после перевода 🕯</p>
+</div>
+
+<div id="sv-step3" style="display:none;text-align:center;padding:10px 0;">
+  <div style="font-size:56px;margin-bottom:16px;">🕯✨</div>
+  <div style="font-family:'Cormorant Garamond',serif;font-size:28px;font-weight:300;color:var(--flame-light);margin-bottom:12px;">Спасибо за оплату!</div>
+  <div style="font-size:14px;font-weight:300;color:var(--muted);line-height:1.8;margin-bottom:24px;">
+    Я получила уведомление.<br>Свяжусь с вами в течение <strong style="color:var(--text);">15 минут</strong><br>для уточнения деталей вашей работы 🔮
+  </div>
+  <a class="tgbtn" href="https://t.me/innasavinumerology" target="_blank">🕯 &nbsp; Подписаться на Telegram</a>
+</div>
+```
+
+  </div>
+</div>
+
+<script>
+// Stars
+var st=document.getElementById('stars');
+for(var i=0;i<100;i++){var s=document.createElement('div');s.className='star';var sz=Math.random()*1.5+0.5;s.style.cssText='width:'+sz+'px;height:'+sz+'px;top:'+Math.random()*100+'%;left:'+Math.random()*100+'%;--d:'+(2+Math.random()*4)+'s;animation-delay:'+Math.random()*5+'s;opacity:'+Math.random()*0.4+';';st.appendChild(s);}
+
+var selectedProblem = null;
+
+function selectProblem(el, prob) {
+  document.querySelectorAll('.problem-btn').forEach(function(b){b.classList.remove('selected');});
+  el.classList.add('selected');
+  selectedProblem = prob;
+  document.getElementById('step2-label').classList.add('visible');
+  document.getElementById('input-row').classList.add('visible');
+  document.getElementById('main-btn').classList.add('visible');
+}
+
+// Rituals by problem + number
+var rituals = {
+  money: [
+    {name:'РИТУАЛ ЗЕЛЁНОЙ СВЕЧИ',sub:'Магия денег · Число 1',sym:'🕯',col:'#43a047',
+     title:'Зелёная свеча с корицей откроет денежный поток',
+     text:'По вашей дате рождения и запросу — ритуал с зелёной свечой и корицей. Это самый мощный инструмент для привлечения денег. Ваше число усиливает магию зелёного огня в разы.',
+     steps:['Зажгите зелёную свечу в четверг на растущей луне','Насыпьте вокруг корицу по часовой стрелке','Произнесите намерение — чётко и без сомнений','Дайте свече догореть полностью не задувая'],
+     warning:'⚠️ Важно: ритуал требует точного времени и правильных слов намерения. Неправильное проведение может заблокировать поток вместо открытия.',
+     cta:'Хотите получить точные слова намерения и идеальное время для вашего ритуала?'},
+    {name:'РИТУАЛ ЗОЛОТОЙ СВЕЧИ',sub:'Магия изобилия · Число 2',sym:'🕯',col:'#f9a825',
+     title:'Золотая свеча с лавром притянет изобилие',
+     text:'Ваша дата указывает на золотую свечу с лавровым листом — классический ритуал для умножения денег. Число 2 усиливает притяжение финансового потока через партнёрство и связи.',
+     steps:['Возьмите золотую или жёлтую свечу в воскресенье','Напишите на лавровом листе желаемую сумму','Поднесите лист к пламени свечи','Пепел развейте на ветер с благодарностью'],
+     warning:'⚠️ Важно: сумма должна быть написана особым образом — не просто цифры. Инна объяснит как правильно.',
+     cta:'Хотите узнать тайную формулу написания суммы для максимального результата?'},
+    {name:'РИТУАЛ КРАСНОЙ СВЕЧИ',sub:'Магия силы · Число 3',sym:'🕯',col:'#e53935',
+     title:'Красная свеча разблокирует вашу денежную энергию',
+     text:'Число вашего рождения говорит о блоке в личной силе — именно он мешает деньгам приходить. Красная свеча с имбирём пробудит вашу энергию лидера и уберёт денежный блок.',
+     steps:['Красная свеча зажигается во вторник','Натрите свечу имбирём снизу вверх — к себе','Визуализируйте поток денег входящий в жизнь','Держите свечу пока не почувствуете тепло в руках'],
+     warning:'⚠️ Важно: направление натирания свечи критично. Неправильное направление отталкивает деньги вместо притяжения.',
+     cta:'Хотите получить полную инструкцию с точным временем и словами для вашего числа?'},
+    {name:'РИТУАЛ КОРИЧНЕВОЙ СВЕЧИ',sub:'Магия земли · Число 4',sym:'🕯',col:'#795548',
+     title:'Коричневая свеча создаст прочный финансовый фундамент',
+     text:'Ваше число 4 — число земли и стабильности. Коричневая свеча с землёй с перекрёстка создаёт магический фундамент для постоянного денежного потока а не разовых поступлений.',
+     steps:['Суббота — лучший день для этого ритуала','Поставьте свечу в тарелку с землёй с перекрёстка','Зажгите и скажите намерение на стабильный доход','Закопайте оставшийся воск под деревом'],
+     warning:'⚠️ Важно: земля должна быть взята с конкретного перекрёстка в определённое время. Инна подскажет какого.',
+     cta:'Хотите узнать все детали для создания постоянного денежного фундамента?'},
+    {name:'РИТУАЛ СИНЕЙ СВЕЧИ',sub:'Магия слова · Число 5',sym:'🕯',col:'#1e88e5',
+     title:'Синяя свеча откроет денежные возможности через слово',
+     text:'Ваше число 5 — число общения и возможностей. Синяя свеча с мятой откроет нужные разговоры, деловые связи и возможности которые принесут деньги через правильных людей.',
+     steps:['Среда — день Меркурия и ваш идеальный день','Зажгите синюю свечу рядом с телефоном','Положите мяту под телефон во время ритуала','Ожидайте нужных звонков и предложений в течение 3 дней'],
+     warning:'⚠️ Важно: во время ритуала нельзя отвечать на звонки. Инна объяснит почему и что делать вместо этого.',
+     cta:'Хотите получить полный ритуал для открытия денежных возможностей через связи?'},
+    {name:'РИТУАЛ ФИОЛЕТОВОЙ СВЕЧИ',sub:'Магия трансформации · Число 6',sym:'🕯',col:'#8e24aa',
+     title:'Фиолетовая свеча трансформирует блоки в поток денег',
+     text:'Число 6 указывает на глубокие кармические блоки в деньгах. Фиолетовая свеча — самый мощный инструмент для трансформации денежных программ заложенных в детстве или переданных по роду.',
+     steps:['Ритуал проводится в полнолуние','Фиолетовая свеча ставится перед зеркалом','Произносится специальное освобождающее намерение','Ритуал повторяется 3 лунных цикла подряд'],
+     warning:'⚠️ Важно: этот ритуал требует точного текста намерения для вашего числа. Неправильный текст может усилить блок.',
+     cta:'Хотите получить точный текст для трансформации ваших денежных программ?'},
+    {name:'РИТУАЛ БЕЛОЙ СВЕЧИ',sub:'Очищение пути · Число 7',sym:'🕯',col:'#e0d0b0',
+     title:'Белая свеча очистит путь для прихода денег',
+     text:'Число 7 — число духовности и чистоты. Часто деньги не приходят из-за энергетического мусора на пути. Белая свеча с солью очистит ваше поле и уберёт всё что мешает деньгам войти в жизнь.',
+     steps:['Понедельник или пятница — ваш день','Обведите белой свечой своё тело три раза','Поставьте свечу в тарелку с морской солью','После ритуала соль высыпьте за порог'],
+     warning:'⚠️ Важно: соль нужна морская и определённого качества. Обычная поваренная работает иначе — Инна объяснит разницу.',
+     cta:'Хотите получить полный ритуал очищения для открытия денежного пути?'}
+  ],
+  love: [
+    {name:'РИТУАЛ РОЗОВОЙ СВЕЧИ',sub:'Магия любви · Число 1',sym:'🕯',col:'#e91e8c',
+     title:'Розовая свеча притянет нежную и настоящую любовь',
+     text:'По вашей дате рождения — ритуал с розовой свечой и розовыми лепестками. Ваше число говорит о том что любовь идёт к вам через вашу уверенность и самоценность. Этот ритуал открывает сердечный центр.',
+     steps:['Пятница — день Венеры и день вашего ритуала','Окружите розовую свечу лепестками розы','Напишите на бумаге качества желаемого партнёра','Сожгите бумагу в пламени с благодарностью'],
+     warning:'⚠️ Важно: список качеств пишется особым образом — не внешность а энергия. Инна покажет как правильно.',
+     cta:'Хотите получить точный ритуал и список качеств для привлечения вашей любви?'},
+    {name:'РИТУАЛ КРАСНОЙ СВЕЧИ',sub:'Магия страсти · Число 2',sym:'🕯',col:'#e53935',
+     title:'Красная свеча вернёт страсть и притянет партнёра',
+     text:'Ваше число 2 — число партнёрства и союза. Красная свеча с розмарином — классический ритуал для привлечения страстной любви и укрепления существующих отношений.',
+     steps:['Вторник или пятница — ваш день','Красная свеча натирается розмарином к себе','Зажгите две свечи символизируя вас и партнёра','Дайте им догореть соприкасаясь основаниями'],
+     warning:'⚠️ Важно: две свечи нужно правильно расположить. Неправильное расположение создаёт отталкивание вместо притяжения.',
+     cta:'Хотите получить точную схему расположения свечей для вашей ситуации?'},
+    {name:'РИТУАЛ ОРАНЖЕВОЙ СВЕЧИ',sub:'Магия радости · Число 3',sym:'🕯',col:'#fb8c00',
+     title:'Оранжевая свеча откроет вас для любви и радости',
+     text:'Число 3 говорит о блоке в получении удовольствия. Вы боитесь довериться и впустить любовь. Оранжевая свеча с апельсиновой кожурой растворяет этот страх и открывает вас для настоящей любви.',
+     steps:['Воскресенье — день солнца и вашего ритуала','Оранжевая свеча с сушёной апельсиновой кожурой','Танцуйте вокруг свечи — да именно танцуйте!','Смейтесь и думайте о радостных моментах любви'],
+     warning:'⚠️ Важно: этот ритуал требует особого настроя. Инна проводит его голосовым сопровождением.',
+     cta:'Хотите провести ритуал открытия любви вместе с Инной онлайн?'},
+    {name:'РИТУАЛ РОЗОВОЙ СВЕЧИ',sub:'Магия нежности · Число 4',sym:'🕯',col:'#e91e8c',
+     title:'Розовая свеча с мёдом создаст сладкие отношения',
+     text:'Число 4 говорит о потребности в стабильных и надёжных отношениях. Розовая свеча с мёдом и ванилью создаёт магнит для партнёра который останется с вами навсегда.',
+     steps:['Пятница на растущей луне — ваш момент','Намажьте свечу мёдом снизу вверх','Обваляйте в смеси ванили и розовых лепестков','Зажгите и медитируйте на образ идеальных отношений'],
+     warning:'⚠️ Важно: мёд нужен определённого сорта для этой цели. Инна объяснит какой и почему.',
+     cta:'Хотите получить полный рецепт ритуала для стабильной и нежной любви?'},
+    {name:'РИТУАЛ ГОЛУБОЙ СВЕЧИ',sub:'Магия связи · Число 5',sym:'🕯',col:'#1e88e5',
+     title:'Голубая свеча установит магическую связь с нужным человеком',
+     text:'Число 5 — число общения и связей. Если есть конкретный человек или вы хотите встретить нового — голубая свеча с лавандой установит тонкую магическую нить притяжения.',
+     steps:['Среда или пятница — ваши дни','Голубая свеча с сушёной лавандой рядом','Напишите имя или описание человека на бумаге','Подержите бумагу над дымом свечи'],
+     warning:'⚠️ Важно: если человек конкретный — нужны дополнительные действия. Инна проконсультирует индивидуально.',
+     cta:'Хотите получить персональный ритуал для вашей конкретной ситуации с любовью?'},
+    {name:'РИТУАЛ РОЗОВОЙ СВЕЧИ',sub:'Магия сердца · Число 6',sym:'🕯',col:'#e91e8c',
+     title:'Розовая свеча откроет сердечную чакру для любви',
+     text:'Число 6 — число любви и гармонии. Но часто сердце закрыто из-за старых обид. Розовая свеча с кварцем сначала исцелит ваше сердце а потом откроет его для настоящей любви.',
+     steps:['Пятница в полнолуние — максимальная сила','Розовая свеча рядом с розовым кварцем','Письмо прощения себе и тем кто причинил боль','Сожгите письмо в пламени освобождая сердце'],
+     warning:'⚠️ Важно: письмо прощения имеет особую структуру. Неправильно написанное не освобождает а удерживает боль.',
+     cta:'Хотите получить структуру письма прощения и полный ритуал открытия сердца?'},
+    {name:'РИТУАЛ БЕЛОЙ СВЕЧИ',sub:'Магия чистоты · Число 7',sym:'🕯',col:'#e0d0b0',
+     title:'Белая свеча очистит от старых отношений и привлечёт новые',
+     text:'Число 7 говорит что старые энергетические связи мешают новой любви прийти. Белая свеча с эвкалиптом разрывает невидимые нити с прошлым и освобождает место для новых отношений.',
+     steps:['Убывающая луна — время разрывать старое','Белая свеча с веточкой эвкалипта','Мысленно отпустите всех бывших партнёров','На растущей луне повторите с розовой свечой'],
+     warning:'⚠️ Важно: ритуал состоит из двух частей в разные лунные фазы. Инна составит точный календарь для вас.',
+     cta:'Хотите получить персональный лунный календарь ритуалов для привлечения любви?'}
+  ],
+  negative: [
+    {name:'РИТУАЛ ЧЁРНОЙ СВЕЧИ',sub:'Магия защиты · Число 1',sym:'🕯',col:'#424242',
+     title:'Чёрная свеча с солью уберёт негатив и защитит',
+     text:'По вашей дате рождения — мощный защитный ритуал с чёрной свечой. Чёрный огонь поглощает весь негатив направленный на вас и создаёт непробиваемый щит.',
+     steps:['Убывающая луна — лучшее время для снятия','Чёрная свеча в тарелке с морской солью','Произносите защитное намерение пока горит','После — соль и воск закопайте подальше от дома'],
+     warning:'⚠️ Важно: закапывать нужно в определённом месте. Неправильное место может вернуть негатив обратно.',
+     cta:'Хотите получить полный ритуал снятия негатива с точными инструкциями?'},
+    {name:'РИТУАЛ БЕЛОЙ СВЕЧИ',sub:'Магия очищения · Число 2',sym:'🕯',col:'#e0d0b0',
+     title:'Белая свеча с ладаном полностью очистит ваше поле',
+     text:'Число 2 говорит о том что негатив пришёл через близкого человека. Белая свеча с ладаном — древнейший способ очищения который используется тысячи лет. Ладан сжигает тёмные программы.',
+     steps:['Воскресенье утром — начало очищения','Обкурите себя дымом ладана на горящей свече','Обведите свечой тело по часовой стрелке 3 раза','Ополоснитесь водой с солью после ритуала'],
+     warning:'⚠️ Важно: ладан нужен натуральный не синтетический. Инна подскажет где взять правильный.',
+     cta:'Хотите получить полный ритуал очищения поля и защиты от негатива?'},
+    {name:'РИТУАЛ СИНЕЙ СВЕЧИ',sub:'Магия защиты · Число 3',sym:'🕯',col:'#1e88e5',
+     title:'Синяя свеча создаст щит от порчи и сглаза',
+     text:'Число 3 говорит о том что вы очень открытый и чувствительный человек — негатив легко прилипает. Синяя свеча с можжевельником создаёт постоянный защитный щит вокруг вашей энергетики.',
+     steps:['Суббота — день Сатурна и защиты','Синяя свеча с ветками можжевельника рядом','Представьте синий щит вокруг вашего тела','Носите с собой кусочек можжевельника 3 дня'],
+     warning:'⚠️ Важно: визуализация щита требует определённой техники. Инна проведёт медитацию защиты онлайн.',
+     cta:'Хотите провести ритуал создания защитного щита вместе с Инной?'},
+    {name:'РИТУАЛ ЧЁРНОЙ СВЕЧИ',sub:'Магия отражения · Число 4',sym:'🕯',col:'#424242',
+     title:'Чёрная свеча с иглой отразит порчу обратно',
+     text:'Число 4 указывает на сильное внешнее воздействие — целенаправленный негатив. Чёрная свеча с иглой — ритуал который возвращает порчу отправителю и ставит зеркальную защиту.',
+     steps:['Убывающая луна строго в полночь','Чёрная свеча с иглой воткнутой сверху вниз','Произнесите слова отражения и возврата','Иглу после ритуала закопайте у чужого порога'],
+     warning:'⚠️ Важно: этот ритуал требует точных слов. Без правильного текста негатив не вернётся и может остаться у вас.',
+     cta:'Хотите получить точный текст ритуала отражения порчи для вашей ситуации?'},
+    {name:'РИТУАЛ ФИОЛЕТОВОЙ СВЕЧИ',sub:'Магия трансформации · Число 5',sym:'🕯',col:'#8e24aa',
+     title:'Фиолетовая свеча трансформирует тёмную энергию в свет',
+     text:'Число 5 говорит о сглазе через слова и общение. Фиолетовая свеча — высший уровень защитной магии. Она не просто снимает негатив а трансформирует его в положительную энергию.',
+     steps:['Полнолуние — максимальная сила трансформации','Фиолетовая свеча перед зеркалом','Медитация на трансформацию тёмного в светлое','Ритуал повторяется 3 ночи подряд'],
+     warning:'⚠️ Важно: смотреть в зеркало во время ритуала нужно особым образом. Инна объяснит технику безопасного зеркального ритуала.',
+     cta:'Хотите провести ритуал трансформации негатива под руководством Инны?'},
+    {name:'РИТУАЛ БЕЛОЙ СВЕЧИ',sub:'Магия света · Число 6',sym:'🕯',col:'#e0d0b0',
+     title:'Белая свеча с молитвой создаст святую защиту',
+     text:'Число 6 говорит о родовом проклятии или семейном негативе. Белая свеча с молитвой — самый древний и надёжный способ очищения рода и защиты всей семьи от тёмных программ.',
+     steps:['Воскресенье рано утром до рассвета','Белая свеча ставится перед иконой или светлым образом','Читается специальная молитва очищения рода','Ритуал повторяется 9 воскресений подряд'],
+     warning:'⚠️ Важно: текст молитвы адаптируется под конкретный род и ситуацию. Инна составит индивидуальную молитву.',
+     cta:'Хотите получить индивидуальную молитву для очищения вашего рода?'},
+    {name:'РИТУАЛ СЕРЕБРЯНОЙ СВЕЧИ',sub:'Магия луны · Число 7',sym:'🕯',col:'#b0b8c0',
+     title:'Серебряная свеча под луной снимет самый сильный негатив',
+     text:'Число 7 — число мистики и тонких миров. Серебряная или белая свеча под открытым ночным небом — мощнейший ритуал снятия любого негатива под покровительством луны.',
+     steps:['Убывающая луна на улице или у открытого окна','Серебряная или белая свеча под лунным светом','Лунная вода заряженная ночью для очищения','Облейтесь лунной водой после ритуала'],
+     warning:'⚠️ Важно: лунная вода заряжается особым образом. Инна расскажет точное время и метод заряжения.',
+     cta:'Хотите получить полный лунный ритуал снятия негатива для числа 7?'}
+  ],
+  wish: [
+    {name:'РИТУАЛ ЗОЛОТОЙ СВЕЧИ',sub:'Магия желания · Число 1',sym:'🕯',col:'#f9a825',
+     title:'Золотая свеча исполнит ваше заветное желание',
+     text:'Ваше число — число лидеров и первооткрывателей. Золотая свеча с лавром усиливает вашу природную способность притягивать желаемое. Ваши желания обладают особой силой — нужно лишь правильно их направить.',
+     steps:['Воскресенье в час солнца (полдень)','Золотая свеча с лавровым листом','Напишите желание в настоящем времени — как будто уже исполнилось','Сожгите бумагу с желанием в пламени'],
+     warning:'⚠️ Важно: формулировка желания критична. Неправильная формулировка притягивает противоположное.',
+     cta:'Хотите получить правильную формулировку вашего желания для максимального результата?'},
+    {name:'РИТУАЛ РОЗОВОЙ СВЕЧИ',sub:'Магия исполнения · Число 2',sym:'🕯',col:'#e91e8c',
+     title:'Розовая свеча откроет путь к вашей мечте',
+     text:'Число 2 говорит что ваше желание связано с отношениями или партнёрством. Розовая свеча с розовым кварцем создаёт магический мост между вашей мечтой и реальностью.',
+     steps:['Растущая луна в пятницу','Розовая свеча рядом с розовым кварцем','Держите кварц в руках и представляйте желание','Спите с кварцем под подушкой 7 ночей'],
+     warning:'⚠️ Важно: кварц нужно предварительно очистить и зарядить. Инна расскажет как.',
+     cta:'Хотите получить полный ритуал исполнения вашей мечты с правильным кварцем?'},
+    {name:'РИТУАЛ ЖЁЛТОЙ СВЕЧИ',sub:'Магия удачи · Число 3',sym:'🕯',col:'#f9a825',
+     title:'Жёлтая свеча притянет удачу и исполнит желание',
+     text:'Число 3 — число творчества и радости. Жёлтая свеча с мёдом и корицей — ритуал для исполнения желаний через радость и позитивную энергию. Ваше число делает этот ритуал особенно мощным.',
+     steps:['Воскресенье в солнечный день','Жёлтая свеча намазанная мёдом','Обваляйте в молотой корице','Зажгите и пойте — да именно пойте любую радостную песню'],
+     warning:'⚠️ Важно: пение активирует особую вибрацию для вашего числа. Инна подберёт нужную мелодию.',
+     cta:'Хотите провести ритуал исполнения желания с музыкальной активацией?'},
+    {name:'РИТУАЛ ЗЕЛЁНОЙ СВЕЧИ',sub:'Магия роста · Число 4',sym:'🕯',col:'#43a047',
+     title:'Зелёная свеча вырастит ваше желание как семя',
+     text:'Число 4 — число терпения и роста. Зелёная свеча с семенем растения символизирует рост вашего желания. Этот ритуал работает медленно но даёт самый прочный и долгосрочный результат.',
+     steps:['Растущая луна в четверг','Зелёная свеча стоит рядом с горшком с землёй','Посадите семя говоря своё желание вслух','Поливайте росток и желание будет расти вместе с ним'],
+     warning:'⚠️ Важно: выбор растения имеет магическое значение. Инна подберёт нужное растение для вашего желания.',
+     cta:'Хотите узнать какое растение усилит именно ваше желание?'},
+    {name:'РИТУАЛ СИНЕЙ СВЕЧИ',sub:'Магия слова · Число 5',sym:'🕯',col:'#1e88e5',
+     title:'Синяя свеча исполнит желание через силу слова',
+     text:'Число 5 — число слова и общения. Ваша сила в произнесении намерений. Синяя свеча с тимьяном активирует магию вашего голоса — именно через слова ваши желания воплощаются быстрее всего.',
+     steps:['Среда — день вашего ритуала','Синяя свеча с веточкой тимьяна','Произносите желание вслух 5 раз на 5 разных тонах','Запишите желание — оно уже на пути к вам'],
+     warning:'⚠️ Важно: тональность голоса при произнесении имеет значение. Инна научит технику звуковой активации желания.',
+     cta:'Хотите освоить технику звуковой активации желания именно для вашего числа?'},
+    {name:'РИТУАЛ ФИОЛЕТОВОЙ СВЕЧИ',sub:'Магия высших сил · Число 6',sym:'🕯',col:'#8e24aa',
+     title:'Фиолетовая свеча соединит ваше желание с высшими силами',
+     text:'Число 6 — число любви и высшей гармонии. Фиолетовая свеча создаёт прямой канал связи с высшими силами. Желания произнесённые в этом состоянии исполняются с особой скоростью.',
+     steps:['Любой день но строго в 21:00','Фиолетовая свеча в тишине без отвлечений','Медитация 10 минут перед зажиганием свечи','Произнесите желание один раз — с полной верой'],
+     warning:'⚠️ Важно: медитация перед ритуалом должна быть специальной — открывающей канал. Инна проведёт её голосом онлайн.',
+     cta:'Хотите провести медитацию открытия канала и ритуал исполнения желания с Инной?'},
+    {name:'РИТУАЛ БЕЛОЙ СВЕЧИ',sub:'Магия чистого намерения · Число 7',sym:'🕯',col:'#e0d0b0',
+     title:'Белая свеча исполнит желание через чистоту намерения',
+     text:'Число 7 — число мистики и духовности. Белая свеча — самый чистый канал для исполнения желаний. Ваше число обладает особой магической силой — желания людей с числом 7 исполняются быстрее при правильном ритуале.',
+     steps:['Новолуние — время новых начал','Белая свеча в полной тишине','Письмо Вселенной — подробное и детальное','Сожгите письмо в пламени белой свечи'],
+     warning:'⚠️ Важно: письмо Вселенной имеет особую структуру для числа 7. Инна составит шаблон именно для вас.',
+     cta:'Хотите получить шаблон письма Вселенной для исполнения вашего желания?'}
+  ],
+  health: [
+    {name:'РИТУАЛ ГОЛУБОЙ СВЕЧИ',sub:'Магия исцеления · Число 1',sym:'🕯',col:'#29b6f6',
+     title:'Голубая свеча с эвкалиптом запустит процесс исцеления',
+     text:'Ваша дата рождения указывает на голубую свечу как инструмент исцеления. Голубой огонь обладает особой целительной частотой которая активирует восстановительные процессы в теле.',
+     steps:['Понедельник или среда — ваши дни','Голубая свеча с эвкалиптом рядом','Положите руки на больное место во время ритуала','Визуализируйте голубой свет исцеляющий тело'],
+     warning:'⚠️ Важно: визуализация исцеления требует специальной техники. Инна проведёт сессию исцеляющей медитации онлайн.',
+     cta:'Хотите провести сессию исцеляющей медитации со свечой вместе с Инной?'},
+    {name:'РИТУАЛ ЗЕЛЁНОЙ СВЕЧИ',sub:'Магия здоровья · Число 2',sym:'🕯',col:'#43a047',
+     title:'Зелёная свеча с мятой восстановит жизненную силу',
+     text:'Число 2 — число восстановления и баланса. Зелёная свеча с мятой и эвкалиптом — мощный ритуал для восстановления здоровья и жизненной силы. Зелёный огонь питает ослабленную энергетику.',
+     steps:['Четверг в час Юпитера (вечером)','Зелёная свеча с листьями мяты','Ванна с морской солью и мятой во время ритуала','Лягте отдыхать сразу после — силы вернутся быстрее'],
+     warning:'⚠️ Важно: ванна должна быть определённой температуры и с правильным количеством соли. Инна даст точный рецепт.',
+     cta:'Хотите получить полный рецепт исцеляющей ванны и ритуала восстановления сил?'},
+    {name:'РИТУАЛ БЕЛОЙ СВЕЧИ',sub:'Магия очищения · Число 3',sym:'🕯',col:'#e0d0b0',
+     title:'Белая свеча с лавандой успокоит нервы и восстановит',
+     text:'Число 3 говорит что ваши проблемы со здоровьем связаны с нервным напряжением и стрессом. Белая свеча с лавандой — лучший ритуал для успокоения нервной системы и восстановления сна.',
+     steps:['Понедельник перед сном','Белая свеча с сушёной лавандой рядом','Ароматерапия и тихая медитация 15 минут','Лягте спать с лавандой под подушкой'],
+     warning:'⚠️ Важно: медитация должна быть специальной успокаивающей. Инна запишет аудио медитацию для вашего числа.',
+     cta:'Хотите получить аудио медитацию и ритуал восстановления нервной системы?'},
+    {name:'РИТУАЛ ОРАНЖЕВОЙ СВЕЧИ',sub:'Магия витальности · Число 4',sym:'🕯',col:'#fb8c00',
+     title:'Оранжевая свеча наполнит тело энергией и силой',
+     text:'Число 4 говорит о хронической усталости и истощении жизненной силы. Оранжевая свеча с имбирём и апельсином — мощный заряд витальной энергии. Один ритуал даёт прилив сил на несколько недель.',
+     steps:['Воскресенье в солнечный полдень','Оранжевая свеча с кружком свежего имбиря','Выпейте имбирный чай во время ритуала','Делайте 10 глубоких дыханий глядя на пламя'],
+     warning:'⚠️ Важно: дыхательная техника во время ритуала усиливает эффект в разы. Инна покажет правильную технику.',
+     cta:'Хотите получить ритуал восстановления энергии с дыхательной практикой?'},
+    {name:'РИТУАЛ ГОЛУБОЙ СВЕЧИ',sub:'Магия покоя · Число 5',sym:'🕯',col:'#29b6f6',
+     title:'Голубая свеча с ромашкой вернёт покой и здоровье',
+     text:'Число 5 — число движения и изменений. Ваше здоровье страдает от перегрузки информацией и слишком быстрого темпа. Голубая свеча с ромашкой создаёт зону покоя и запускает исцеление.',
+     steps:['Пятница вечером в тишине','Голубая свеча с сушёной ромашкой','Полное отключение от телефона на время ритуала','Ромашковый чай и тихая музыка'],
+     warning:'⚠️ Важно: для вашего числа критично полное молчание во время ритуала. Инна объяснит почему и как это практиковать.',
+     cta:'Хотите получить ритуал исцеления через покой специально для вашего числа?'},
+    {name:'РИТУАЛ ЗЕЛЁНОЙ СВЕЧИ',sub:'Магия гармонии · Число 6',sym:'🕯',col:'#43a047',
+     title:'Зелёная свеча гармонизирует все системы тела',
+     text:'Число 6 — число гармонии и баланса. Болезнь приходит когда нарушается гармония. Зелёная свеча с целебными травами восстанавливает баланс всех систем тела через магию природных сил.',
+     steps:['Четверг на растущей луне','Зелёная свеча с букетом из 6 целебных трав','Произносите намерение здоровья для каждого органа','Травы после ритуала заварите в чай и выпейте'],
+     warning:'⚠️ Важно: набор трав подбирается индивидуально для вашей ситуации. Инна составит персональный сбор.',
+     cta:'Хотите получить персональный травяной сбор и ритуал восстановления здоровья?'},
+    {name:'РИТУАЛ БЕЛОЙ СВЕЧИ',sub:'Магия чистоты · Число 7',sym:'🕯',col:'#e0d0b0',
+     title:'Белая свеча с серебром очистит тело от болезни',
+     text:'Число 7 — число мистической силы. Люди с числом 7 обладают природной способностью к самоисцелению — нужно лишь активировать её. Белая свеча с серебром запускает этот внутренний механизм.',
+     steps:['Понедельник в час луны','Белая свеча рядом с серебряным украшением','Наденьте серебро на время ритуала','Серебро будет хранить исцеляющую энергию'],
+     warning:'⚠️ Важно: серебро должно быть настоящим и предварительно очищенным. Инна расскажет как очистить и активировать.',
+     cta:'Хотите получить ритуал активации природной силы самоисцеления для числа 7?'}
+  ],
+  trade: [
+    {name:'РИТУАЛ ЗЕЛЁНОЙ СВЕЧИ',sub:'Магия сделки · Число 1',sym:'🕯',col:'#43a047',title:'Зелёная свеча с корицей закроет выгодную сделку',text:'Ваше число указывает на зелёную свечу как главный инструмент для привлечения денег через сделки. Зелёный огонь с корицей активирует поток покупателей и убирает препятствия на пути к продаже.',steps:['Четверг — день Юпитера и денег','Зелёная свеча натёртая корицей снизу вверх','Напишите цену сделки на бумаге под свечой','Дайте догореть — сделка закроется в течение 7 дней'],warning:'⚠️ Важно: цена пишется особым образом. Инна покажет как правильно.',cta:'Хотите получить точный ритуал для закрытия вашей сделки по нужной цене?'},
+    {name:'РИТУАЛ ЗОЛОТОЙ СВЕЧИ',sub:'Магия выгоды · Число 2',sym:'🕯',col:'#f9a825',title:'Золотая свеча привлечёт нужного покупателя',text:'Число 2 — число партнёрства. Золотая свеча с лавром притягивает именно того покупателя который даст нужную цену без торга.',steps:['Воскресенье в солнечный день','Золотая свеча с лавровыми листьями','Напишите на листе желаемую сумму и идеального покупателя','Сожгите лист в пламени с уверенностью'],warning:'⚠️ Важно: описание покупателя должно быть точным. Инна поможет.',cta:'Хотите получить ритуал притяжения нужного покупателя?'},
+    {name:'РИТУАЛ ЖЁЛТОЙ СВЕЧИ',sub:'Магия торга · Число 3',sym:'🕯',col:'#f9a825',title:'Жёлтая свеча поможет договориться о лучшей цене',text:'Число 3 — число переговоров. Жёлтая свеча с мятой усиливает убедительность в торге и переговорах.',steps:['Среда — день Меркурия','Жёлтая свеча с веточкой мяты','Проговорите условия сделки 3 раза','В день переговоров носите мяту с собой'],warning:'⚠️ Важно: слова должны быть в определённом порядке. Инна составит скрипт.',cta:'Хотите получить ритуал успешных переговоров?'},
+    {name:'РИТУАЛ КОРИЧНЕВОЙ СВЕЧИ',sub:'Магия земли · Число 4',sym:'🕯',col:'#795548',title:'Коричневая свеча ускорит продажу недвижимости',text:'Число 4 — число земли. Коричневая свеча лучший выбор для продажи недвижимости или бизнеса.',steps:['Суббота — день стабильных сделок','Коричневая свеча в тарелке с землёй с участка','Произнесите намерение продать по нужной цене','Воск закопайте у порога объекта'],warning:'⚠️ Важно: землю берут именно с продаваемого объекта. Инна расскажет как.',cta:'Хотите ритуал быстрой продажи недвижимости?'},
+    {name:'РИТУАЛ СИНЕЙ СВЕЧИ',sub:'Магия рекламы · Число 5',sym:'🕯',col:'#1e88e5',title:'Синяя свеча привлечёт поток покупателей',text:'Число 5 — число информации. Синяя свеча запускает сарафанное радио и усиливает рекламу.',steps:['Среда — ваш торговый день','Синяя свеча рядом с телефоном','Произнесите намерение привлечь покупателей','Запустите рекламу сразу после ритуала'],warning:'⚠️ Важно: текст рекламы после ритуала должен быть специальным. Инна поможет.',cta:'Хотите ритуал привлечения потока клиентов?'},
+    {name:'РИТУАЛ ОРАНЖЕВОЙ СВЕЧИ',sub:'Магия изобилия · Число 6',sym:'🕯',col:'#fb8c00',title:'Оранжевая свеча откроет поток покупок',text:'Число 6 — число изобилия. Оранжевая свеча создаёт атмосферу изобилия вокруг бизнеса.',steps:['Воскресенье утром','Оранжевая свеча с апельсиновыми корками','Обойдите объект со свечой','Апельсиновые корки разложите по углам'],warning:'⚠️ Важно: обход делается в определённом направлении. Инна проведёт дистанционно.',cta:'Хотите ритуал освящения для привлечения покупателей?'},
+    {name:'РИТУАЛ БЕЛОЙ СВЕЧИ',sub:'Магия чистоты · Число 7',sym:'🕯',col:'#e0d0b0',title:'Белая свеча снимет блок с продажи',text:'Число 7 говорит о блоке мешающем продаже. Белая свеча очистит пространство и уберёт всё тормозящее сделку.',steps:['Понедельник на убывающей луне','Белая свеча с ладаном','Окурите объект дымом ладана','После очищения сделка пойдёт быстрее'],warning:'⚠️ Важно: нужно определить точную причину блока. Инна сделает диагностику.',cta:'Хотите диагностику блока и ритуал ускорения сделки?'}
+  ],
+  family: [
+    {name:'РИТУАЛ БЕЛОЙ СВЕЧИ',sub:'Магия мира · Число 1',sym:'🕯',col:'#e0d0b0',
+     title:'Белая свеча принесёт мир и гармонию в дом',
+     text:'По вашей дате рождения — ритуал очищения и гармонизации дома. Белая свеча обходит все углы дома собирая негатив и конфликтную энергию. После ритуала атмосфера в доме меняется кардинально.',
+     steps:['Понедельник утром начиная с порога','Обойдите весь дом с белой свечой против часовой стрелки','Уберите за собой — физически и магически','Заканчивайте у порога выходя из дома'],
+     warning:'⚠️ Важно: направление обхода и начальная точка критичны. Инна составит маршрут для планировки вашего дома.',
+     cta:'Хотите получить персональный маршрут ритуала очищения для вашего дома?'},
+    {name:'РИТУАЛ РОЗОВОЙ СВЕЧИ',sub:'Магия любви в семье · Число 2',sym:'🕯',col:'#e91e8c',
+     title:'Розовая свеча восстановит любовь и тепло в семье',
+     text:'Число 2 — число партнёрства и семьи. Розовая свеча с корицей и ванилью создаёт атмосферу любви тепла и взаимопонимания в доме. Конфликты уходят а близость возвращается.',
+     steps:['Пятница вечером когда все дома','Розовая свеча в центре стола во время ужина','Корица и ваниль рядом со свечой','Говорите только добрые слова весь вечер'],
+     warning:'⚠️ Важно: слова произнесённые во время ритуала имеют усиленную магическую силу. Инна даст список фраз-активаторов.',
+     cta:'Хотите получить список магических фраз для восстановления гармонии в семье?'},
+    {name:'РИТУАЛ ОРАНЖЕВОЙ СВЕЧИ',sub:'Магия радости · Число 3',sym:'🕯',col:'#fb8c00',
+     title:'Оранжевая свеча вернёт радость и смех в семью',
+     text:'Число 3 говорит что в доме поселилась тяжесть и серьёзность. Оранжевая свеча с апельсиновыми корками — ритуал для наполнения дома радостью лёгкостью и детским смехом.',
+     steps:['Воскресенье — день семьи','Оранжевые корки разложите по дому','Зажгите оранжевую свечу в центре дома','Вся семья делает что-то радостное вместе'],
+     warning:'⚠️ Важно: совместное действие семьи во время ритуала многократно усиливает эффект. Инна подберёт активность для вашей семьи.',
+     cta:'Хотите получить персональный ритуал возвращения радости для вашей семьи?'},
+    {name:'РИТУАЛ КОРИЧНЕВОЙ СВЕЧИ',sub:'Магия стабильности · Число 4',sym:'🕯',col:'#795548',
+     title:'Коричневая свеча создаст прочный и стабильный дом',
+     text:'Число 4 — число дома и фундамента. Коричневая свеча с землёй укрепляет энергетику дома защищает от разрушений и создаёт ощущение надёжности и стабильности для всей семьи.',
+     steps:['Суббота — лучший день для укрепления дома','Коричневая свеча закопайте немного в землю в горшке','Поставьте у входной двери','Горшок остаётся у порога постоянно'],
+     warning:'⚠️ Важно: земля в горшке должна быть определённого происхождения. Инна расскажет какую брать и где.',
+     cta:'Хотите получить ритуал создания прочного и защищённого дома для вашей семьи?'},
+    {name:'РИТУАЛ ГОЛУБОЙ СВЕЧИ',sub:'Магия общения · Число 5',sym:'🕯',col:'#1e88e5',
+     title:'Голубая свеча наладит общение и понимание в семье',
+     text:'Число 5 говорит что проблемы в семье из-за непонимания и недосказанности. Голубая свеча с лавандой открывает каналы для честного и доброго общения между всеми членами семьи.',
+     steps:['Среда вечером за общим столом','Голубая свеча в центре стола','Каждый член семьи говорит 1 добрую вещь о другом','Лаванда рядом — успокаивает и открывает сердца'],
+     warning:'⚠️ Важно: порядок высказываний имеет значение. Инна составит ритуал семейного круга для вашей семьи.',
+     cta:'Хотите получить ритуал семейного круга для налаживания общения и мира?'},
+    {name:'РИТУАЛ РОЗОВОЙ СВЕЧИ',sub:'Магия гармонии · Число 6',sym:'🕯',col:'#e91e8c',
+     title:'Розовая свеча восстановит гармонию и баланс в семье',
+     text:'Число 6 — число любви и семьи. Это ваше число и ваша суперсила. Розовая свеча с розами создаёт мощный поток семейной любви. Ваша семья может быть образцом гармонии — ритуал запустит этот потенциал.',
+     steps:['Пятница — ваш самый сильный день','Розы в вазе рядом с розовой свечой','Напишите благодарности каждому члену семьи','Прочитайте их вслух при зажжённой свече'],
+     warning:'⚠️ Важно: благодарность должна быть написана особым образом для максимального эффекта. Инна даст шаблон.',
+     cta:'Хотите получить шаблон благодарственного письма и ритуал гармонии для вашей семьи?'},
+    {name:'РИТУАЛ БЕЛОЙ СВЕЧИ',sub:'Магия защиты семьи · Число 7',sym:'🕯',col:'#e0d0b0',
+     title:'Белая свеча поставит защиту на весь дом и семью',
+     text:'Число 7 — число мистической защиты. Белая свеча с солью и ладаном создаёт непробиваемый защитный купол над всем домом и семьёй. Никакой негатив извне не проникнет внутрь.',
+     steps:['Воскресенье рано утром','Обойдите дом с белой свечой и ладаном','Насыпьте соль по периметру дома снаружи','Ритуал повторяется раз в месяц для поддержания защиты'],
+     warning:'⚠️ Важно: соль насыпается особым образом создавая защитный контур. Инна нарисует схему для вашего дома.',
+     cta:'Хотите получить схему защитного контура и ритуал защиты семьи?'}
+  ]
+};
+
+function svReduce(n){while(n>7){var s=0;while(n>0){s+=n%10;n=Math.floor(n/10);}n=s;}return n;}
+
+function svCalculate(){
+  if(!selectedProblem){document.getElementById('sv-err').style.display='block';document.getElementById('sv-err').textContent='Выберите вашу ситуацию';return;}
+  var day=parseInt(document.getElementById('sv-day').value);
+  var month=parseInt(document.getElementById('sv-month').value);
+  var year=parseInt(document.getElementById('sv-year').value);
+  var err=document.getElementById('sv-err');
+  if(!day||!month||!year||day<1||day>31||month<1||month>12||year<1920||year>2015){err.style.display='block';err.textContent='Введите корректную дату рождения';return;}
+  err.style.display='none';
+  var str=String(day)+String(month)+String(year);
+  var total=0;for(var i=0;i<str.length;i++)total+=parseInt(str[i]);
+  var idx=svReduce(total)-1;
+  var list=rituals[selectedProblem];
+  var r=list[Math.max(0,Math.min(6,idx))];
+  document.getElementById('sv-symbol').textContent='🕯';
+  document.getElementById('sv-symbol').style.filter='drop-shadow(0 0 25px '+r.col+')';
+  document.getElementById('sv-name').textContent=r.name;
+  document.getElementById('sv-name').style.color=r.col;
+  document.getElementById('sv-sub').textContent=r.sub;
+  document.getElementById('sv-title').textContent=r.title;
+  document.getElementById('sv-title').style.color=r.col;
+  document.querySelector('.rcard::before');
+  document.getElementById('sv-text').textContent=r.text;
+  document.getElementById('sv-warning').textContent=r.warning;
+  document.getElementById('sv-ctatext').textContent=r.cta;
+  var sl=document.getElementById('sv-steps');sl.innerHTML='';
+  r.steps.forEach(function(s,i){sl.innerHTML+='<div class="step-item"><div class="step-num">'+(i+1)+'</div><span>'+s+'</span></div>';});
+  var res=document.getElementById('sv-result');res.style.display='block';
+  setTimeout(function(){res.scrollIntoView({behavior:'smooth',block:'start'});},100);
+}
+
+function svOpenModal(){document.getElementById('sv-overlay').classList.add('open');document.body.style.overflow='hidden';svShowStep('sv-step1');}
+function svCloseModal(){document.getElementById('sv-overlay').classList.remove('open');document.body.style.overflow='';}
+document.getElementById('sv-overlay').addEventListener('click',function(e){if(e.target===this)svCloseModal();});
+function svShowStep(id){['sv-step1','sv-step2','sv-step3'].forEach(function(s){document.getElementById(s).style.display=s===id?'block':'none';});}
+
+function svGoPayment(){
+  var name=document.getElementById('sv-fname').value.trim();
+  var contact=document.getElementById('sv-fcontact').value.trim();
+  var err=document.getElementById('sv-ferr');
+  if(!name||!contact){err.style.display='block';return;}
+  err.style.display='none';
+  var token='8751357245:AAGacyJg1pCBvfI5omKGfAIL6vim6tO-UzA';
+  var chatId='708287643';
+  var problems={'money':'💰 Деньги','love':'💔 Любовь','negative':'🌑 Негатив/Сглаз','wish':'✨ Желание','health':'🌿 Здоровье','family':'🏠 Семья','trade':'🏡 Покупка/Продажа/Бизнес'};
+  var now=new Date().toLocaleString('ru-RU',{timeZone:'Asia/Almaty'});
+  var text='🕯 Новая заявка на обряд со свечой!\n\n👤 Имя: '+name+'\n📲 Контакт: '+contact+'\n🔮 Запрос: '+(problems[selectedProblem]||selectedProblem)+'\n🕐 Время (Алматы): '+now+'\n\n⏳ Ждёт ответа по стоимости работы';
+  fetch('https://api.telegram.org/bot'+token+'/sendMessage',{method:'POST',headers:{'Content-Type':'application/json'},body:JSON.stringify({chat_id:chatId,text:text})});
+  svShowStep('sv-step2');
+  // Auto-open Telegram after 2 seconds
+  setTimeout(function(){ window.open('https://t.me/innasavinumerology','_blank'); }, 2000);
+}
+
+function svConfirm(){
+  var name=document.getElementById('sv-fname').value.trim();
+  var contact=document.getElementById('sv-fcontact').value.trim();
+  var token='8751357245:AAGacyJg1pCBvfI5omKGfAIL6vim6tO-UzA';
+  var chatId='708287643';
+  var now=new Date().toLocaleString('ru-RU',{timeZone:'Asia/Almaty'});
+  var problems={'money':'💰 Деньги','love':'💔 Любовь','negative':'🌑 Негатив/Сглаз','wish':'✨ Желание','health':'🌿 Здоровье','family':'🏠 Семья','trade':'🏡 Покупка/Продажа/Бизнес'};
+  var text='✅ ОПЛАТА ПОДТВЕРЖДЕНА!\n\n👤 Имя: '+name+'\n📲 Контакт: '+contact+'\n🕯 Запрос: '+(problems[selectedProblem]||selectedProblem)+'\n💰 Сумма: 15 000 ₸\n🕐 Время: '+now+'\n\n👉 Свяжитесь с клиентом и проведите обряд!';
+  fetch('https://api.telegram.org/bot'+token+'/sendMessage',{method:'POST',headers:{'Content-Type':'application/json'},body:JSON.stringify({chat_id:chatId,text:text})});
+  svShowStep('sv-step3');
+}
+
+function svCopy(text,btn){
+  if(navigator.clipboard){navigator.clipboard.writeText(text).then(function(){var o=btn.textContent;btn.textContent='✓ СКОПИРОВАНО';btn.classList.add('copied');setTimeout(function(){btn.textContent=o;btn.classList.remove('copied');},2000);});}
+  else{var t=document.createElement('textarea');t.value=text;document.body.appendChild(t);t.select();document.execCommand('copy');document.body.removeChild(t);btn.textContent='✓ СКОПИРОВАНО';btn.classList.add('copied');setTimeout(function(){btn.textContent='КОПИРОВАТЬ';btn.classList.remove('copied');},2000);}
+}
+
+document.getElementById('sv-day').addEventListener('input',function(){if(this.value.length>=2)document.getElementById('sv-month').focus();});
+document.getElementById('sv-month').addEventListener('input',function(){if(this.value.length>=2)document.getElementById('sv-year').focus();});
+</script>
+
+</body>
+</html>
