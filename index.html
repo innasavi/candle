@@ -3,6 +3,7 @@
 <html lang="ru">
 <head>
 <meta charset="UTF-8">
+<meta name="format-detection" content="telephone=no">
 <meta name="viewport" content="width=device-width, initial-scale=1.0, maximum-scale=1.0">
 <title>Какой ритуал со свечой решит вашу проблему?</title>
 <link href="https://fonts.googleapis.com/css2?family=Cormorant+Garamond:ital,wght@0,300;0,400;0,600;1,300;1,400&family=Cinzel:wght@400;500;600&family=Raleway:wght@300;400;500;600&display=swap" rel="stylesheet">
@@ -55,7 +56,8 @@
 .input-row.visible { opacity:1; }
 .input-group { display:flex; flex-direction:column; align-items:center; gap:7px; }
 .input-group label { font-size:10px; letter-spacing:2px; color:var(–muted); text-transform:uppercase; }
-.num-input { background:rgba(255,255,255,0.05); border:1px solid rgba(229,98,10,0.3); border-radius:2px; color:var(–flame-light); font-family:‘Cormorant Garamond’,serif; font-size:26px; font-weight:300; text-align:center; outline:none; -moz-appearance:textfield; transition:border-color 0.3s; }
+.num-input { background:rgba(255,255,255,0.08); border:1px solid rgba(229,98,10,0.3); border-radius:2px; color:#ffffff; font-family:‘Cormorant Garamond’,serif; font-size:26px; font-weight:400; text-align:center; outline:none; -moz-appearance:textfield; transition:border-color 0.3s; -webkit-text-fill-color:#ffffff; caret-color:#f5a623; }
+.num-input:-webkit-autofill,.num-input:-webkit-autofill:hover,.num-input:-webkit-autofill:focus { -webkit-text-fill-color:#ffffff !important; -webkit-box-shadow:0 0 0px 1000px #1a0800 inset !important; }
 .num-input::-webkit-outer-spin-button,.num-input::-webkit-inner-spin-button { -webkit-appearance:none; }
 .num-input:focus { border-color:var(–flame-light); background:rgba(229,98,10,0.08); }
 .num-input.d { width:68px; height:60px; }
@@ -118,10 +120,10 @@
 .mbtn { width:100%; margin-top:18px; padding:14px; background:linear-gradient(135deg,#e8620a,#a03800); border:none; border-radius:2px; color:#fff; font-family:‘Cinzel’,serif; font-size:11px; letter-spacing:3px; text-transform:uppercase; cursor:pointer; transition:all 0.3s; }
 .mbtn:hover { transform:translateY(-1px); box-shadow:0 8px 30px rgba(229,98,10,0.4); }
 .mprivacy { font-size:10px; color:rgba(138,126,110,0.4); text-align:center; margin-top:12px; line-height:1.5; }
-.paybox { background:rgba(255,255,255,0.03); border:1px solid rgba(255,255,255,0.08); border-radius:3px; padding:13px 14px; margin-bottom:10px; display:flex; align-items:center; gap:10px; }
+.paybox { background:rgba(255,255,255,0.05); border:1px solid rgba(229,98,10,0.2); border-radius:3px; padding:14px; margin-bottom:10px; display:flex; align-items:center; gap:10px; }
 .payinfo { flex:1; text-align:left; }
 .paylabel { font-size:10px; letter-spacing:2px; color:var(–muted); text-transform:uppercase; margin-bottom:3px; }
-.payval { font-family:‘Cormorant Garamond’,serif; font-size:19px; color:var(–text); letter-spacing:1px; }
+.payval { font-family:‘Cormorant Garamond’,serif; font-size:20px; color:#f0e8d0; letter-spacing:1px; font-weight:600; text-decoration:none; }
 .copybtn { background:rgba(229,98,10,0.1); border:1px solid rgba(229,98,10,0.3); border-radius:2px; color:var(–flame-light); font-size:9px; letter-spacing:1px; padding:6px 9px; cursor:pointer; font-family:‘Cinzel’,serif; white-space:nowrap; transition:all 0.2s; }
 .copybtn.copied { background:rgba(50,200,100,0.15); border-color:rgba(50,200,100,0.4); color:#5ec97a; }
 .tgbtn { display:inline-flex; align-items:center; gap:10px; padding:12px 24px; border:1px solid var(–flame-light); border-radius:2px; color:var(–flame-light); font-family:‘Cinzel’,serif; font-size:10px; letter-spacing:2px; text-transform:uppercase; text-decoration:none; transition:all 0.3s; animation:glow 2.5s ease-in-out infinite; }
@@ -254,17 +256,17 @@
   <p class="msub">После оплаты нажмите кнопку ниже — свяжусь в течение 15 минут</p>
   <div style="background:rgba(229,98,10,0.08);border:1px solid rgba(229,98,10,0.3);border-radius:4px;padding:14px 20px;margin-bottom:16px;text-align:center;">
     <div style="font-family:'Cinzel',serif;font-size:9px;letter-spacing:3px;color:var(--muted);margin-bottom:4px;">СТОИМОСТЬ МАГИЧЕСКОЙ РАБОТЫ</div>
-    <div style="font-family:'Cormorant Garamond',serif;font-size:46px;font-weight:300;color:var(--flame-light);line-height:1;" id="modal-price">15 000 ₸</div>
+    <div style="font-family:'Cormorant Garamond',serif;font-size:46px;font-weight:300;color:var(--flame-light);line-height:1;" id="modal-price">10 000 ₸</div>
     <div style="font-size:11px;color:var(--muted);margin-top:4px;">Индивидуальная магическая работа · Онлайн</div>
   </div>
   <div class="paybox">
     <span style="font-size:24px;">📱</span>
-    <div class="payinfo"><div class="paylabel">Kaspi по номеру</div><div class="payval">8 707 370 88 65</div></div>
+    <div class="payinfo"><div class="paylabel">Kaspi по номеру</div><div class="payval"><span style="color:#f0e8d0;font-weight:600;-webkit-text-decoration:none;text-decoration:none;">8 707 370 88 65</span></div></div>
     <button class="copybtn" onclick="svCopy('87073708865',this)">КОПИРОВАТЬ</button>
   </div>
   <div class="paybox" style="margin-bottom:20px;">
     <span style="font-size:24px;">💳</span>
-    <div class="payinfo"><div class="paylabel">Карта · INNA S.</div><div class="payval">4400 4303 3932 2718</div></div>
+    <div class="payinfo"><div class="paylabel">Карта · INNA S.</div><div class="payval"><span style="color:#f0e8d0;font-weight:600;">4400 4303 3932 2718</span></div></div>
     <button class="copybtn" onclick="svCopy('4400430339322718',this)">КОПИРОВАТЬ</button>
   </div>
   <button class="mbtn" onclick="svConfirm()" style="margin-top:0;">✅ Я оплатила — жду обряд</button>
